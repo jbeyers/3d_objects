@@ -10,7 +10,7 @@ r_step = 20;
 
 $fs=2;
 $fa=1;
-v_offsets = rands(0,0,r_step*v_step);
+v_offsets = rands(-3,3,r_step*v_step);
 r_offsets = rands(-5,5,r_step*v_step);
 difference() {
     translate([0,0,h/2]) cylinder(h, d=w*1.2,center=true);
