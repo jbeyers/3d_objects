@@ -1,5 +1,22 @@
+// The arms are designed to be spaced 18mm apart, using 25mm wide aluminium flat bar.
+// This fits a 6mm belt with 6mm space between them.
+// For that, print 4 blocks with the following dimensions:
+// belt_above_surface = 11.8;
+// side_support_offset = 12.5;
+//
+// For a 15mm lift from the sled surface (2.5mm thick alu bar plus 12.5mm clearance for the bolts):
+//
+// print 2 of these:
+//
+// Also print 2 of these:
+// Uncomment the mirroring
+// belt_above_surface = 27; // 15mm plus belt height plus spacing inbetween
+// side_support_offset = 30;
+//
+//
+ooze = 0.15; // My machine has a wall ooze (extra width) of about 0.15mm.
 nozzle = 0.4; // Extrusion nozzle width
-m6 = 3; // radius of holes.
+m6 = 3 + ooze; // radius of holes.
 peg = m6+3*nozzle; // Radius of pegs. We want the walls to be x times extrusion width
 mounting_distance = 30; // Center to center distance between holes
 belt_above_surface = 11.8; // Height of belt above surface.
@@ -12,7 +29,7 @@ belt_thickness = 1.5; // Belt thickness
 belt_thickness_meshed = 2.3; // Thickness of 2 intermeshing belts
 min_radius = min(1, belt_above_surface);
 cyl_height = belt_above_surface + belt_width;
-lock_tab_offset = peg + belt_thickness_meshed + lock_tab_r;
+lock_tab_offset = peg + belt_thickness_meshed + lock_tab_r + 2*ooze;
 peg_2 = peg+belt_thickness_meshed-belt_thickness; // The second peg is slightly bigger.
 
 module support(peg) {
@@ -45,9 +62,11 @@ module base() {
     }
 }
 
-
+// Uncomment the mirror to get a mirror image of the mounting.
+//mirror([0,1,0]) {
 difference() {
     base();
     cylinder(r=m6, h=cyl_height);
     translate([mounting_distance,0,0]) cylinder(r=m6, h=cyl_height);
 }
+//}
