@@ -7,6 +7,8 @@
 // For a 15mm lift from the sled surface (2.5mm thick alu bar plus 12.5mm clearance for the bolts):
 //
 // print 2 of these:
+// belt_above_surface = 15;
+// side_support_offset = 20;
 //
 // Also print 2 of these:
 // Uncomment the mirroring
@@ -63,10 +65,10 @@ module base() {
 }
 
 // Uncomment the mirror to get a mirror image of the mounting.
-//mirror([0,1,0]) {
+// mirror([0,1,0]) {
 difference() {
     base();
     cylinder(r=m6, h=cyl_height);
     translate([mounting_distance,0,0]) cylinder(r=m6, h=cyl_height);
 }
-//}
+// }
