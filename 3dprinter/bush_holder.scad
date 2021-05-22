@@ -44,7 +44,7 @@ difference() {
     // Cutout for chipboard
     translate([0,0,a3]) cube([a1,a2,bo/2]);
     // Bush
-    translate([a1+c1,f2+zl,a3]) cube([bo,b3,bo]);
+    translate([a1+c1,f2,a3]) cube([bo,b3+2*zl,bo]);
     // bush end stops/shaft clearance
     translate([a1+c1,0,a3+f3]) cube([bo,a2,bo]);
     // Slots for cable ties
