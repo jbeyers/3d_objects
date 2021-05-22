@@ -1,26 +1,37 @@
 // Parametric holder to affix a sliding bush to a flat platform, hanging off the side of the platform, with the bearing top in line with the platform. Designed to snap onto the bearing, and to be printed on its side to maximise strength.
 
+// a is the base 'plate'
+// b is the bush
+// c is the upright spacer to offset the bush from the chipboard
+// d is the cable tie slot
+// h is screw dimensions
+// f is the side flanges to locate the bearing
 $fn=48;
-a = 24.0; // Holder flat part width
-b = 4.0; // Holder flat part thickness
-c = 80.0; // Holder flat part length
-d = 0.8; // Shaft clearances.
-e = 13.0; // Bush OD
-f = 8; // Bush ID
-g = 15; // Bush length + 2
-h = 3.2; // Bush offset from chipboard. Multiple of 0.4, just enough to clear cable tie
-i = 4; // Cable tie slot width
-j = 4.2; // Screw hole id
-k = 8; // Screw countersink hole size
+a1 = 24.0; // Holder flat part width (Just to the chipboard edge)
+a3 = 4.0; // Holder flat part thickness
+bo = 13.0; // Bush OD
+bi = 8; // Bush ID
+b3 = 15; // Bush length
+zl = 0.8; // Shaft clearances.
+c1 = 3.2; // Bush offset from chipboard. Multiple of 0.4, just enough to clear cable tie
+d1 = 1.6; // Cable tie slot depth
+d2 = 5; // Cable tie slot width
+hi = 4.2; // Screw hole id
+ho = 8; // Screw countersink hole size
 l = 1; // Screw hole guide size
-m = 1.2; // Bush side holding flange
+f2 = 1.6; // Bush side holding flange
+f3 = 2.2; // Bush side holding flange
 p1 = 8; // hole 1 distance
 p2 = 19.2; // hole 2 distance
 
-holder_w = m*2+g;
+a2 = b3 + f2*2 + zl*2;
 
 module screw_hole(d1, d2, h1, h2) {
+    // d1: hole id
+    // d2: countersink hole id
+    // h2: Total hole length
     union() {
+        // Small hole all the way through
         cylinder(h2, d=d1);
         translate([0,0,h1]) cylinder((d2-d1)/2, d1=d1, d2=d2);
         translate([0,0,h1+(d2-d1)/2]) cylinder(h2-h1-(d2-d1)/2, d=d2);
@@ -29,18 +40,18 @@ module screw_hole(d1, d2, h1, h2) {
 
 difference() {
     // Base block
-    cube([a+h+e/2+d,holder_w,b+e/2]);
+    cube([a1+c1+bo/2,a2,a3+bo/2]);
     // Cutout for chipboard
-    translate([0,0,b]) cube([a,holder_w,e/2]);
+    translate([0,0,a3]) cube([a1,a2,bo/2]);
     // Bush
-    translate([a+h,m,b]) cube([e,g,e]);
+    translate([a1+c1,f2+zl,a3]) cube([bo,b3,bo]);
     // bush end stops/shaft clearance
-    translate([a+h+2,0,b]) cube([e,holder_w,e]);
+    translate([a1+c1,0,a3+f3]) cube([bo,a2,bo]);
     // Slots for cable ties
-    translate([a,m+g/2-i/2,0]) cube([1.6,h,b+e/2]);
+    translate([a1,(a2-d2)/2,0]) cube([d1,d2,a3+bo/2]);
     // Screw holes
-    translate([a-p1,holder_w/2,b]) rotate([180, 0, 0]) screw_hole(j,8, 0.2, 15);
-    translate([a-p2,holder_w/2,b]) rotate([180, 0, 0]) screw_hole(j,8, 0.2, 15);
+    translate([a1-p1,a2/2,a3]) rotate([180, 0, 0]) screw_hole(hi,ho, 1.4, a3);
+    translate([a1-p2,a2/2,a3]) rotate([180, 0, 0]) screw_hole(hi,ho, 1.4, a3);
     // Cutout for the mounting/alignment screw
-    translate([13,holder_w-21,0]) cylinder(b,r=7);
+    translate([a1-12,a2-21,0]) cylinder(a3,r=7);
 }
