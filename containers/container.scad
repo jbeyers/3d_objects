@@ -1,20 +1,61 @@
-a = 0.4; // wall thickness
-b = 0.2; // Inset for looseness
-c = 2.0; // height of chamfer
-d = 0.4; // width of chamfer
-e = 1.4; // Gap for pegs
-f = 8; // Base unit of width and length
-g = 9.6; // Base unit of height
+$fn=48;
+base_l = 32; // outside length. Default to 4 X 4 lego brick size
+base_h = 9.6; // Default to lego brick height. Add 1/2 r to the individual height to allow for nesting when stacked.
+r = 3.2; // Radius of the edges, but also determines some other things. Do NOT change!
 
-l = 8*f-b; // outside length
-w = 4*f-b; // outside width
-h = 2*g; // height
+w = 3; // So many base_l units wide
+l = 1; // So many base_l units long
+h = 2; // So many base_h units high.
 
 
-hull() {
-    translate([d,d,0]) cube([l-2*d,w-2*d,1]);
-    translate([e,0,c]) cube([l-2*e,w,1]);
-    translate([0,e,c]) cube([l,w-2*e,1]);
-    translate([e,0,h-1]) cube([l-2*e,w,1]);
-    translate([0,e,h-1]) cube([l,w-2*e,1]);
+// A truncated pyramid, pointing down. Base for the waffle grid
+module pyramid() {
+    hull() {
+        translate([r, r, 0]) cylinder(r/2.0, r/2.0, r);
+        translate([base_l-r, r, 0]) cylinder(r/2.0, r/2.0, r);
+        translate([base_l-r, base_l-r, 0]) cylinder(r/2.0, r/2.0, r);
+        translate([r, base_l-r, 0]) cylinder(r/2.0, r/2.0, r);
+    }
 }
+
+// Storage box
+module box(w, l, h, r) {
+    x = w * base_l;
+    y = l * base_l;
+    z = h * base_h;
+    hr = r/2.0;
+    difference() {
+        // Main body
+        hull() {
+            translate([r, r, hr]) cylinder(z-0.4, r, r);
+            translate([x-r, r, hr]) cylinder(z-0.4, r, r);
+            translate([x-r, y-r, hr]) cylinder(z-0.4, r, r);
+            translate([r, y-r, hr]) cylinder(z-0.4, r, r);
+        };
+        // Cut out waffle pattern at the top
+        for (a = [1: 1: w]) {
+            for (b = [1: 1: l]) {
+                translate([(a-1)*base_l,(b-1)*base_l,0]) {
+                    translate([0,0,z]) pyramid();
+                }
+            }
+        };
+        // Cut out the waffle connecting lines at the top
+        hull() {
+            translate([r, r, r]) cylinder(z, hr, hr);
+            translate([x-r, r, r]) cylinder(z, hr, hr);
+            translate([x-r, y-r, r]) cylinder(z, hr, hr);
+            translate([r, y-r, r]) cylinder(z, hr, hr);
+        };
+        
+    }
+    // Add waffle pattern at the bottom
+    for (a = [1: 1: w]) {
+        for (b = [1: 1: l]) {
+            translate([(a-1)*base_l,(b-1)*base_l,0]) {
+                pyramid();
+            }
+        }
+    }
+}
+box(w, l, h, r);
