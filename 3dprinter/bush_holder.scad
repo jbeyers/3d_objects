@@ -7,7 +7,8 @@
 // h is screw dimensions
 // f is the side flanges to locate the bearing
 $fn=48;
-a1 = 24.0; // Holder flat part width (Just to the chipboard edge)
+a1 = 18.0; // Holder flat part width (Just to the chipboard edge)
+// a1 = 24.0; // Original version
 a3 = 4.0; // Holder flat part thickness
 bo = 13.0; // Bush OD
 bi = 8; // Bush ID
@@ -20,9 +21,11 @@ hi = 4.2; // Screw hole id
 ho = 8; // Screw countersink hole size
 l = 1; // Screw hole guide size
 f2 = 1.6; // Bush side holding flange
-f3 = 2.2; // Bush side holding flange
-p1 = 8; // hole 1 distance
-p2 = 19.2; // hole 2 distance
+f3 = 1.8; // Bush side holding flange
+p1 = 5.6; // hole 1 distance
+// p1 = 8; // Original version
+p2 = 13.8; // hole 2 distance
+// p2 = 19.2; // Original version
 
 a2 = b3 + f2*2 + zl*2;
 
@@ -53,5 +56,6 @@ difference() {
     translate([a1-p1,a2/2,a3]) rotate([180, 0, 0]) screw_hole(hi,ho, 1.4, a3);
     translate([a1-p2,a2/2,a3]) rotate([180, 0, 0]) screw_hole(hi,ho, 1.4, a3);
     // Cutout for the mounting/alignment screw
-    translate([a1-12,a2-21,0]) cylinder(a3,r=7);
+    // Uncomment for version with cutout
+    // translate([a1-12,a2-21,0]) cylinder(a3,r=7);
 }
