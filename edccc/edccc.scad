@@ -87,51 +87,63 @@ module cc_rounded_with_rubber_band_slot() {
         up(0.6) back((cc_width -11) / 2) cuboid([cc_length, 11, 0.7], anchor = BOTTOM + LEFT + FRONT);
         back((cc_width -11) / 2) left(10) cuboid([10, 11, 0.6], anchor = BOTTOM + LEFT + FRONT, rounding = -0.3, edges= [TOP + LEFT, TOP + RIGHT]);
         back((cc_width -11) / 2) right(cc_length) cuboid([10, 11, 0.6], anchor = BOTTOM + LEFT + FRONT, rounding = -0.3, edges= [TOP + LEFT, TOP + RIGHT]);
+        // Locator slots on bottom edges
+        back(0.5) right(corner_radius) cube([cc_length-2*corner_radius, 0.6, 0.5]);
+        back(cc_width-1.1) right(corner_radius) cube([cc_length-2*corner_radius, 0.6, 0.5]);
+        back(corner_radius) right(0.5) cube([0.6, cc_width-2*corner_radius, 0.5]);
+        back(corner_radius) right(cc_length-1.1) cube([0.6, cc_width-2*corner_radius, 0.5]);
     }
 }
 
 module credit_card_block(length=cc_length, width=cc_width, h=cc_thickness, corner_radius=corner_radius, bottom_locator=true, top_locator=true) {
     cuboid([length, width, h], anchor = BOTTOM+LEFT+FRONT, rounding=corner_radius, edges=[FRONT+LEFT, FRONT+RIGHT, BACK+LEFT, BACK+RIGHT]);
-    if (bottom_locator) {
-        // Locator notch on bottom edge
-        down(0.1) front(0.1) cube([15, 5, 0.2], anchor = BOTTOM+LEFT+FRONT);
-    }
     if (top_locator) {
         // Locator notch on top edge
-        up(h-0.1) back(0.1) cube([15, 5, 0.2], anchor = TOP+LEFT+BACK);
+        up(h) {
+            back(0.6) right(corner_radius+1) cube([cc_length-2*corner_radius-2, 0.4, 0.4]);
+            back(cc_width-1.0) right(corner_radius+1) cube([cc_length-2*corner_radius-2, 0.4, 0.4]);
+            back(corner_radius+1) right(0.6) cube([0.4, cc_width-2*corner_radius-2, 0.4]);
+            back(corner_radius+1) right(cc_length-1.0) cube([0.4, cc_width-2*corner_radius-2, 0.4]);
+        }
     }
     
 }
 
 hole_radius = 14.7/2;
-module rolson() {
+module rolson(h=2.1) {
     intersection() {
-        cube([89,45,2.1]);
-        right(11) back(13) cylinder(h=2.1, r=(hole_radius + 57.8), $fn=64);
+        cube([89,45,h]);
+        right(11) back(13) cylinder(h=h, r=(hole_radius + 57.8), $fn=64);
     }
-    right(11) back(13) cylinder(h=2.1, r=(hole_radius + 8.5), $fn=64);
-    back(46.2) left(5) cube([60,2.4,2.1]);
-    back(45) right(55) cube([5,3.6,2.1]);
-    back(45) cube([22,3.6,2.1]);
-    back(15) left(5) cube([0.8,31.2,2.1]);
-    // left(1.4) cube(11,11,2.1);
-    left(1.9) cube([11,11,2.1]);
+    right(11) back(13) cylinder(h=h, r=(hole_radius + 8.5), $fn=64);
+    back(46.2) left(5) cube([60,2.4,h]);
+    back(45) right(55) cube([5,3.6,h]);
+    back(45) cube([22,3.6,h]);
+    back(15) left(5) cube([0.8,31.2,h]);
+    // left(1.4) cube(11,11,h);
+    left(1.8) cube([11,11,h]);
     hull() {
-        back(25) left(5) cube([0.8,21.2,2.1]);
-        back(46.2) left(5) cube([4,2.4,2.1]);
+        back(25) left(5) cube([0.8,21.2,h]);
+        back(46.2) left(5) cube([4,2.4,h]);
     }
 }
 module cc_cc_edc_holder() {
-
-    difference() {
-        rolson();
-        right(11) back(13) cylinder(h=2.1, r=hole_radius, $fn=64);
+    // Make it extra high to ensure clean cuts on the location strips
+    h = 2.6;
+    difference(h) {
+        rolson(h);
+        right(11) back(13) cylinder(h=h, r=hole_radius, $fn=64);
     }
 }
 
 //  up(35) cc_rounded_with_rubber_band_slot();
 // credit_card_block(bottom_locator=false, top_locator=false);
 difference() {
-    credit_card_block(h=2.6, bottom_locator=false, top_locator=false);
+    credit_card_block(h=2.6, bottom_locator=false);
     up(0.5) right(7) cc_cc_edc_holder();
 }
+
+// up(20) difference() {
+//     cc_rounded_with_rubber_band_slot();
+//     back(46.2) right
+// }   
